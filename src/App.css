@@ -98,6 +98,13 @@ input{
 li{
   list-style: none;
   margin-bottom: 10px;
+  background: gray;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+ul{
+  background: lightblue;
 }
 
 li button{

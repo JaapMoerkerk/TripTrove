@@ -2,22 +2,46 @@ import React, {useState} from "react";
 
 const TripTrove = () => {
     const [inputText, setInputText] = useState("");
-    const [inputList, setInputList] = useState([]);
+    const [inputList, setInputList] = useState(["","","","",""]);
+    const [addBtnActive, setAddBtnActive] = useState(true);
+    const [genBtnActive, setGenBtnActive] = useState(false);
 
     const handleInputChange = (event) => {
         setInputText(event.target.value);
     };
 
     const handleAddInput = () => {
-        if (inputText.trim() !== '') {
+        console.log("Add button clicked.");
+        console.log(inputText);
+        console.log(inputList.length);
+        if (inputText.trim() !== "" && inputList.length < 5) {
             setInputList((prevInput) => [...prevInput, inputText]);
-            setInputText('');
+            setInputText("");
+            if (inputList.length + 1 === 5) {
+                setAddBtnActive(false);
+            }
+            if (inputList.length === 0) {
+                setGenBtnActive(true);
+            }
+        }
+        else if (inputText.trim() !== ""){
+            //Error: Maximum of 5 words reached
+        } else{
+            //Error: Input is empty
         }
     };
 
     const handleRemoveInput = (index) => {
-        setInputList((prevInput) => prevInput.filter((_, i) => i !== index));
-    }
+        setInputList((prevInput) => {
+            const updatedList = [...prevInput];
+            updatedList.splice(index, 1);
+            // Activate 'Add' button when an item is removed
+            setAddBtnActive(true);
+            // Deactivate 'Generate' button when all words are removed
+            setGenBtnActive(updatedList.length > 0);
+            return updatedList;
+        });
+    };
 
     const handleGenerate = () => {
         console.log("Button clicked")
@@ -36,15 +60,21 @@ const TripTrove = () => {
                             value={inputText}
                             onChange={handleInputChange}
                             placeholder="Replace with quote API"/>
-                        <button id={"add-btn"} onClick={handleAddInput}>
+                        <button
+                            id={"add-btn"}
+                            onClick={handleAddInput}
+                            disabled={!addBtnActive}
+                        >
                             Add
                         </button>
                     </div>
                 </section>
 
                 <section id="input-list" className={"half-page column"}>
-                    <ul>
-                        <button id={"gen-btn"} onClick={handleGenerate}>
+                <ul>
+                        <button id={"gen-btn"}
+                                onClick={handleGenerate}
+                                disabled={!genBtnActive}>
                             Generate your next journey
                         </button>
 
