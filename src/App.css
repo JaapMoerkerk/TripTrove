@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700&display=swap');
+
 .App {
   text-align: center;
 }
@@ -35,4 +37,83 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/*TripTrove credit*/
+#home-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+}
+
+.row{
+  display: flex;
+  flex-direction: row;
+}
+
+.column{
+  display: flex;
+  flex-direction: column;
+}
+
+.half-page{
+  width: 50vw;
+  align-items: center;
+}
+
+h1{
+  font-weight: 500;
+}
+
+.title{
+  color: darkviolet;
+  font-weight: 700;
+}
+
+button{
+  background: darkviolet;
+  color: white;
+  border: 1px solid darkviolet;
+  padding: 10px;
+  font-family: 'Poppins', sans-serif;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#input-div{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+input{
+  margin-right: 20px;
+  border-radius: 10px;
+  padding: 10px;
+  border: 2px solid darkviolet;
+}
+
+li{
+  list-style: none;
+  margin-bottom: 10px;
+}
+
+li button{
+  margin-left: 20px;
+}
+
+#gen-btn{
+  margin-bottom: 20px;
+}
+
+#remove-btn{
+  background: #b40000;
+  border: none;
+  transition: 0.3s ease;
+}
+
+#remove-btn:hover{
+  background: red;
 }
