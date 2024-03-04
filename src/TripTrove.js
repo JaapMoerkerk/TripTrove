@@ -121,6 +121,16 @@ const TripTrove = () => {
                 </section>
 
             </div>
+
+            <Modal
+            isOpen={modalIsOpen}
+            onRequestClose={closeModal}
+            contentLabel={"Chat Modal"}
+            >
+                {loading && <div className={"loading-icon"}>Loading...</div>}
+                <div id={"modal-content"}></div>
+            </Modal>
+
         </div>
     )
 }
