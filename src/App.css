@@ -58,7 +58,8 @@
 }
 
 .half-page{
-  width: 50vw;
+  width: 44vw;
+  padding: 0 3vw;
   align-items: center;
 }
 
@@ -79,6 +80,7 @@ button{
   font-family: 'Poppins', sans-serif;
   border-radius: 10px;
   cursor: pointer;
+  transition: 0.3s ease;
 }
 
 #input-div{
@@ -98,13 +100,6 @@ input{
 li{
   list-style: none;
   margin-bottom: 10px;
-  background: gray;
-  padding: 5px;
-  border-radius: 10px;
-}
-
-ul{
-  background: lightblue;
 }
 
 li button{
@@ -123,4 +118,15 @@ li button{
 
 #remove-btn:hover{
   background: red;
+}
+
+.btn-deactivated{
+  opacity: 30%;
+  background: black;
+  cursor: default;
+}
+
+h3{
+  font-weight: 500;
+  font-size: 1em;
 }

@@ -1,33 +1,30 @@
 import React, {useState} from "react";
+import Modal from "react-modal";
 
 const TripTrove = () => {
+    //Config screen button and input states
     const [inputText, setInputText] = useState("");
-    const [inputList, setInputList] = useState(["","","","",""]);
+    const [inputList, setInputList] = useState([]);
     const [addBtnActive, setAddBtnActive] = useState(true);
     const [genBtnActive, setGenBtnActive] = useState(false);
 
+    //Modal
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     const handleInputChange = (event) => {
         setInputText(event.target.value);
+        setGenBtnActive(inputList.length > 0);
     };
 
     const handleAddInput = () => {
-        console.log("Add button clicked.");
-        console.log(inputText);
-        console.log(inputList.length);
         if (inputText.trim() !== "" && inputList.length < 5) {
             setInputList((prevInput) => [...prevInput, inputText]);
             setInputText("");
-            if (inputList.length + 1 === 5) {
-                setAddBtnActive(false);
+            if (inputList.length === 4) {
+                setAddBtnActive(false)
             }
-            if (inputList.length === 0) {
-                setGenBtnActive(true);
-            }
-        }
-        else if (inputText.trim() !== ""){
-            //Error: Maximum of 5 words reached
-        } else{
-            //Error: Input is empty
+            setGenBtnActive(true);
         }
     };
 
@@ -35,16 +32,47 @@ const TripTrove = () => {
         setInputList((prevInput) => {
             const updatedList = [...prevInput];
             updatedList.splice(index, 1);
-            // Activate 'Add' button when an item is removed
-            setAddBtnActive(true);
-            // Deactivate 'Generate' button when all words are removed
+            if (updatedList.length < 5) {
+                setAddBtnActive(true);
+            }
             setGenBtnActive(updatedList.length > 0);
             return updatedList;
         });
     };
 
     const handleGenerate = () => {
-        console.log("Button clicked")
+        console.log("Generate button clicked");
+        setLoading(true);
+        apiCall();
+    };
+
+    const apiCall = () => {
+        const apiUrl = "https://www.placeholder.com/triptrove";
+        const requestBody = {
+            inputList: inputList
+        };
+
+        fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("API response:", data); //Handling GPT response
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error); //Handling API errors
+                setLoading(false);
+            });
+        setModalIsOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false);
     };
 
     return (
@@ -54,6 +82,7 @@ const TripTrove = () => {
 
                 <section id="user-input" className={"half-page column"}>
                     <h2>Where are you leading yourself?</h2>
+                    <h3>Pick up to 5 words to start the search for your perfect destination.</h3>
                     <div id={"input-div"}>
                         <input
                             type="text"
@@ -63,7 +92,9 @@ const TripTrove = () => {
                         <button
                             id={"add-btn"}
                             onClick={handleAddInput}
+                            className={addBtnActive ? "" : "btn-deactivated"}
                             disabled={!addBtnActive}
+
                         >
                             Add
                         </button>
@@ -71,10 +102,12 @@ const TripTrove = () => {
                 </section>
 
                 <section id="input-list" className={"half-page column"}>
-                <ul>
+                    <ul>
                         <button id={"gen-btn"}
                                 onClick={handleGenerate}
-                                disabled={!genBtnActive}>
+                                className={genBtnActive ? "" : "btn-deactivated"}
+                                disabled={!genBtnActive}
+                        >
                             Generate your next journey
                         </button>
 
