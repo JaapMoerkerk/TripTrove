@@ -52,22 +52,22 @@ const TripTrove = () => {
             inputList: inputList
         };
 
-        fetch(apiUrl, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log("API response:", data); //Handling GPT response
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error("Error fetching data:", error); //Handling API errors
-                setLoading(false);
-            });
+        // fetch(apiUrl, {
+        //     method: "POST",
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(requestBody),
+        // })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         console.log("API response:", data); //Handling GPT response
+        //         setLoading(false);
+        //     })
+        //     .catch(error => {
+        //         console.error("Error fetching data:", error); //Handling API errors
+        //         setLoading(false);
+        //     });
         setModalIsOpen(true);
     };
 
@@ -123,12 +123,18 @@ const TripTrove = () => {
             </div>
 
             <Modal
-            isOpen={modalIsOpen}
-            onRequestClose={closeModal}
-            contentLabel={"Chat Modal"}
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel={"Chat Modal"}
+                className={"Modal"}
             >
-                {loading && <div className={"loading-icon"}>Loading...</div>}
-                <div id={"modal-content"}></div>
+                {/*{loading && <div className={"loading-icon"}>Loading...</div>}*/}
+                {/*{!loading &&*/}
+                    <div id={"modal-content"}>
+                        <p>This is the modal</p>
+                        <h2>And a title within.</h2>
+                    </div>
+                {/*}*/}
             </Modal>
 
         </div>

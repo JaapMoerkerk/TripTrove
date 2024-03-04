@@ -131,6 +131,30 @@ h3{
   font-size: 1em;
 }
 
-.modal{
-  background: red;
+/* Modal Styles */
+.Modal {
+  width: 70vw;
+  height: 50vh;
+  font-family: 'Poppins', sans-serif;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #e0e0e0;
+  border: 2px solid darkviolet;
+  padding: 20px;
+  border-radius: 8px;
+  outline: none; /* Remove the default modal outline */
+}
+
+/* Loading Icon Styles */
+.loading-icon {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #333; /* Set the color you prefer */
 }
