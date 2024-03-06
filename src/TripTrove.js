@@ -42,33 +42,33 @@ const TripTrove = () => {
 
     const handleGenerate = () => {
         console.log("Generate button clicked");
+        setModalIsOpen(true);
         setLoading(true);
         apiCall();
     };
 
     const apiCall = () => {
-        const apiUrl = "https://www.placeholder.com/triptrove";
+        const apiUrl = "http://localhost:3095/generate";
         const requestBody = {
             inputList: inputList
         };
 
-        // fetch(apiUrl, {
-        //     method: "POST",
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(requestBody),
-        // })
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         console.log("API response:", data); //Handling GPT response
-        //         setLoading(false);
-        //     })
-        //     .catch(error => {
-        //         console.error("Error fetching data:", error); //Handling API errors
-        //         setLoading(false);
-        //     });
-        setModalIsOpen(true);
+        fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: requestBody,
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("API response:", data); //Handling GPT response
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error); //Handling API errors
+                setLoading(false);
+            });
     };
 
     const closeModal = () => {
@@ -88,7 +88,7 @@ const TripTrove = () => {
                             type="text"
                             value={inputText}
                             onChange={handleInputChange}
-                            placeholder="Replace with quote API"/>
+                            placeholder="Like 'Beach' or 'Clubbing'"/>
                         <button
                             id={"add-btn"}
                             onClick={handleAddInput}
@@ -99,6 +99,14 @@ const TripTrove = () => {
                             Add
                         </button>
                     </div>
+                    <button id="test-btn"
+                    onClick={apiCall}>
+                        Test hier de API call...
+                    </button>
+                    <h1>
+                        {/*Testveld voor API output*/}
+
+                    </h1>
                 </section>
 
                 <section id="input-list" className={"half-page column"}>
