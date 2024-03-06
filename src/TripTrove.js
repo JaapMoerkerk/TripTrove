@@ -7,6 +7,9 @@ const TripTrove = () => {
     const [inputList, setInputList] = useState([]);
     const [addBtnActive, setAddBtnActive] = useState(true);
     const [genBtnActive, setGenBtnActive] = useState(false);
+    const [gptResponse, setGptResponse] = useState("");
+    const [modalInput, setModalInput] = useState("");
+    const [modalInputActive, setModalInputActive] = useState(false);
 
     //Modal
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -58,12 +61,14 @@ const TripTrove = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: requestBody,
+            body: JSON.stringify(requestBody),
         })
             .then(response => response.json())
             .then(data => {
                 console.log("API response:", data); //Handling GPT response
+                setGptResponse(data.content);
                 setLoading(false);
+                setModalInputActive(true);
             })
             .catch(error => {
                 console.error("Error fetching data:", error); //Handling API errors
@@ -94,19 +99,10 @@ const TripTrove = () => {
                             onClick={handleAddInput}
                             className={addBtnActive ? "" : "btn-deactivated"}
                             disabled={!addBtnActive}
-
                         >
                             Add
                         </button>
                     </div>
-                    <button id="test-btn"
-                    onClick={apiCall}>
-                        Test hier de API call...
-                    </button>
-                    <h1>
-                        {/*Testveld voor API output*/}
-
-                    </h1>
                 </section>
 
                 <section id="input-list" className={"half-page column"}>
@@ -136,13 +132,21 @@ const TripTrove = () => {
                 contentLabel={"Chat Modal"}
                 className={"Modal"}
             >
-                {/*{loading && <div className={"loading-icon"}>Loading...</div>}*/}
-                {/*{!loading &&*/}
+                {loading && <div className={"loading-icon"}>Loading...</div>}
+                {!loading &&
                     <div id={"modal-content"}>
-                        <p>This is the modal</p>
-                        <h2>And a title within.</h2>
+                        <h4>Please answer these short questions for your perfect destination.</h4>
+                        <p>
+                            {gptResponse}
+                        </p>
+                        {modalInputActive &&
+                        <input
+                            type="text"
+                            value={modalInput}
+                            placeholder=""/>
+                        }
                     </div>
-                {/*}*/}
+                }
             </Modal>
 
         </div>
