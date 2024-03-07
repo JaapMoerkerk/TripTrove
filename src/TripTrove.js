@@ -8,8 +8,6 @@ const TripTrove = () => {
     const [addBtnActive, setAddBtnActive] = useState(true);
     const [genBtnActive, setGenBtnActive] = useState(false);
     const [gptResponse, setGptResponse] = useState("");
-    const [modalInput, setModalInput] = useState("");
-    const [modalInputActive, setModalInputActive] = useState(false);
 
     //Modal
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -68,7 +66,6 @@ const TripTrove = () => {
                 console.log("API response:", data); //Handling GPT response
                 setGptResponse(data.content);
                 setLoading(false);
-                setModalInputActive(true);
             })
             .catch(error => {
                 console.error("Error fetching data:", error); //Handling API errors
@@ -139,12 +136,6 @@ const TripTrove = () => {
                         <p>
                             {gptResponse}
                         </p>
-                        {modalInputActive &&
-                        <input
-                            type="text"
-                            value={modalInput}
-                            placeholder=""/>
-                        }
                     </div>
                 }
             </Modal>
