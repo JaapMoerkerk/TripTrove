@@ -1,28 +1,33 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Modal from "react-modal";
 
 const TripTrove = () => {
     //Config screen button and input states
     const [inputText, setInputText] = useState("");
-    const [inputList, setInputList] = useState(["Test"]);
+    const [inputList, setInputList] = useState(["Mountains", "Terraces", "Hiking", "Europe"]);
     const [addBtnActive, setAddBtnActive] = useState(true);
     const [genBtnActive, setGenBtnActive] = useState(true);
     const [gptResponse, setGptResponse] = useState("");
+    const [sessionId, setSessionId] = useState("");
 
     //Modal/chatbox
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [chatInput, setChatInput] = useState("");
     const [chatInputActive, setChatInputActive] = useState(false);
+    const [weatherResponse, setWeatherResponse] = useState("");
+
+    useEffect(() => {
+        if (!sessionId) {
+            const newSessionId = `session_${Date.now()}`;
+            setSessionId(newSessionId);
+        }
+    }, [sessionId]);
 
     const handleInputChange = (event) => {
         setInputText(event.target.value);
         setGenBtnActive(inputList.length > 0);
     };
-
-    const handleChatInputChange = (event) =>{
-        setChatInput(event.target.value);
-    }
 
     const handleAddInput = () => {
         if (inputText.trim() !== "" && inputList.length < 5) {
@@ -54,29 +59,57 @@ const TripTrove = () => {
         apiCall(inputList);
     };
 
-    const apiCall = (input) => {
-        const apiUrl = "http://localhost:3095/generate";
-        const requestBody = {
-            inputList: input
-        };
+    const apiCall = (input, isChatInput = false) => {
+        const apiUrl = "https://triptrove-backend.onrender.com/generate";
+        const requestBody = isChatInput
+            ? {chatInput: input, sessionId}
+            : {inputList: input, sessionId};
 
         fetch(apiUrl, {
             method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(requestBody),
         })
             .then(response => response.json())
             .then(data => {
-                console.log("API response:", data);   //Handling GPT response
-                setGptResponse(data.content);         //Display response in modal <p>
-                setLoading(false);              //Turn off loading
-                setChatInputActive(true);       //Chatbox input activated
+                setGptResponse(data.content);
+                setLoading(false);
+                setChatInputActive(true); // Reactivate chat input only after receiving response
+                setChatInput(""); // Clear chat input after sending
             })
             .catch(error => {
-                console.error("Error fetching data:", error); //Handling API errors
+                console.error("Error fetching data:", error);
                 setLoading(false);
+            });
+    };
+
+    const handleSendChatInput = () => {
+        if (chatInput.trim() !== "") {
+            setLoading(true);
+            setChatInputActive(false); // Deactivate chat input button to prevent multiple sends
+            apiCall(chatInput, true); // Call API with chat input, indicating it's a chat response
+        }
+    }
+
+    const fetchWeatherInfo = () => {
+        const apiUrl = "https://triptrove-backend.onrender.com/weather";
+        const requestBody = { sessionId };
+
+        setLoading(true); // Show loading indicator while fetching weather info
+        fetch(apiUrl, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestBody),
+        })
+            .then(response => response.json())
+            .then(data => {
+                setWeatherResponse(data.content); // Set weather response
+                setLoading(false); // Hide loading indicator
+            })
+            .catch(error => {
+                console.error("Error fetching weather information:", error);
+                setLoading(false); // Hide loading indicator in case of an error
+                setWeatherResponse("Failed to fetch weather information."); // Error message
             });
     };
 
@@ -135,10 +168,9 @@ const TripTrove = () => {
                 onRequestClose={closeModal}
                 contentLabel={"Chat Modal"}
                 className={"Modal"}
-                shouldCloseOnOverClick={false}
-                shouldCloseOnEsc={false}
+                // Other modal props remain unchanged
             >
-                <h4>Please answer these short questions for your perfect destination.</h4>
+                <h4>The destination is AI generated based on your input. Feel free to ask questions about this location or ask for alternatives.</h4>
                 {loading && <div className={"loading-icon"}>Loading...</div>}
                 {!loading && (
                     <div id={"modal-content"}>
@@ -148,12 +180,21 @@ const TripTrove = () => {
                                 <input
                                     type="text"
                                     value={chatInput}
-                                    onChange={handleChatInputChange}
+                                    onChange={(event) => setChatInput(event.target.value)}
                                     placeholder="Type your answer..."
                                 />
-                                <button onClick={() => console.log("Submit chat input")}>
+                                <button onClick={handleSendChatInput}
+                                        className={chatInputActive ? "" : "btn-deactivated"}>
                                     Send
                                 </button>
+                            </div>
+                        )}
+                        {!loading && gptResponse && (
+                            <div>
+                                <button onClick={fetchWeatherInfo} className="weather-btn">
+                                    What is the weather like there?
+                                </button>
+                                {weatherResponse && <p>{weatherResponse}</p>}
                             </div>
                         )}
                     </div>
