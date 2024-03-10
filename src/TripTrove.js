@@ -9,14 +9,20 @@ const TripTrove = () => {
     const [genBtnActive, setGenBtnActive] = useState(true);
     const [gptResponse, setGptResponse] = useState("");
 
-    //Modal
+    //Modal/chatbox
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [chatInput, setChatInput] = useState("");
+    const [chatInputActive, setChatInputActive] = useState(false);
 
     const handleInputChange = (event) => {
         setInputText(event.target.value);
         setGenBtnActive(inputList.length > 0);
     };
+
+    const handleChatInputChange = (event) =>{
+        setChatInput(event.target.value);
+    }
 
     const handleAddInput = () => {
         if (inputText.trim() !== "" && inputList.length < 5) {
@@ -63,9 +69,10 @@ const TripTrove = () => {
         })
             .then(response => response.json())
             .then(data => {
-                console.log("API response:", data); //Handling GPT response
-                setGptResponse(data.content);
-                setLoading(false);
+                console.log("API response:", data);   //Handling GPT response
+                setGptResponse(data.content);         //Display response in modal <p>
+                setLoading(false);              //Turn off loading
+                setChatInputActive(true);       //Chatbox input activated
             })
             .catch(error => {
                 console.error("Error fetching data:", error); //Handling API errors
@@ -133,13 +140,24 @@ const TripTrove = () => {
             >
                 <h4>Please answer these short questions for your perfect destination.</h4>
                 {loading && <div className={"loading-icon"}>Loading...</div>}
-                {!loading &&
+                {!loading && (
                     <div id={"modal-content"}>
-                        <p>
-                            {gptResponse}
-                        </p>
+                        <p>{gptResponse}</p>
+                        {chatInputActive && (
+                            <div id={"chat-input"}>
+                                <input
+                                    type="text"
+                                    value={chatInput}
+                                    onChange={handleChatInputChange}
+                                    placeholder="Type your answer..."
+                                />
+                                <button onClick={() => console.log("Submit chat input")}>
+                                    Send
+                                </button>
+                            </div>
+                        )}
                     </div>
-                }
+                )}
             </Modal>
 
         </div>
