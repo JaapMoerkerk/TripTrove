@@ -4,9 +4,9 @@ import Modal from "react-modal";
 const TripTrove = () => {
     //Config screen button and input states
     const [inputText, setInputText] = useState("");
-    const [inputList, setInputList] = useState([]);
+    const [inputList, setInputList] = useState(["Test"]);
     const [addBtnActive, setAddBtnActive] = useState(true);
-    const [genBtnActive, setGenBtnActive] = useState(false);
+    const [genBtnActive, setGenBtnActive] = useState(true);
     const [gptResponse, setGptResponse] = useState("");
 
     //Modal
@@ -45,13 +45,13 @@ const TripTrove = () => {
         console.log("Generate button clicked");
         setModalIsOpen(true);
         setLoading(true);
-        apiCall();
+        apiCall(inputList);
     };
 
-    const apiCall = () => {
+    const apiCall = (input) => {
         const apiUrl = "http://localhost:3095/generate";
         const requestBody = {
-            inputList: inputList
+            inputList: input
         };
 
         fetch(apiUrl, {
@@ -128,11 +128,13 @@ const TripTrove = () => {
                 onRequestClose={closeModal}
                 contentLabel={"Chat Modal"}
                 className={"Modal"}
+                shouldCloseOnOverClick={false}
+                shouldCloseOnEsc={false}
             >
+                <h4>Please answer these short questions for your perfect destination.</h4>
                 {loading && <div className={"loading-icon"}>Loading...</div>}
                 {!loading &&
                     <div id={"modal-content"}>
-                        <h4>Please answer these short questions for your perfect destination.</h4>
                         <p>
                             {gptResponse}
                         </p>
